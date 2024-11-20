@@ -21,4 +21,4 @@ to add private keys to ssh agent the command is `ssh-add "private key path"`
 * the ssh makes a connection between remote server and local client. this connection will be active untile the ssh sessions gets expires.
 * when we run some commands in local machine then the commands are sent to server machine in an encrypted ssh tunnel 
 * to connect with server the server should have ssh deamon and the local machine or clint should have ssh client
-* ssh deamon will create an environment for client and lisition on network port 
+* ssh deamon will listen on network port and it will establish an environment for client if the client has the correct credentials

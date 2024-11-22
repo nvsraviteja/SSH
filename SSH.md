@@ -51,7 +51,7 @@ in password baesd authentication the remote server will ask for username passwor
 in this type user will generate a pair of keys (private & public) public key will be with server and it can be shared with anyone it has no restricton where as private key it should be with the user and should not share it with anyone when user tries to connect with server then server will authenticate with keys and allow access to the user
 # How to generate keys
 In general the keys are generated with a command `ssh-keygen`.\
-this command will generate both public & private keys and this keys are stored in `~/.ssh` by default.\
+this command will generate both public & private keys. This keys are generated with RSA algorithm by default and this keys are stored in `~/.ssh` by default.\
 the key names are `id_rsa` (private key) & `id_rsa.pub` (public key)\ 
 Once keys are generated the public key should be stored in the server\
 to store the public key in the server there are 2 ways
@@ -60,3 +60,65 @@ to store the public key in the server there are 2 ways
 `~/.ssh/id_rsa.pub` the path for the public key which should be coppied\
 `username@server_ip` username of the server and the ip address of the server/
 2. manualy copy the public key which is in `~/.ssh/id_rsa.pub` and connect to server via password based authentication and paste the public key in authorized_key file which will be at `~/.ssh/authorized_keys`.
+# Where the public key should be in the server
+the public key should be at `~/.ssh/authorized_keys` 
+# How ssh works
+When user from local machine (clint) wants to access remote server and do some operations on it then user will initate the request to server.\
+Then the server will send a cipher text to clint which means encripted message. This encripted message is generated with the help of public key algorthm.\ 
+When the local machine recives the cipher text it will decode it because it has the private key.\
+It will send the decrypted text to server. Then the server gets to know that the clint has the private key and it will allow user to access the server and perform operations on it.
+# SSH Agent 
+It is a background process which is used to store and manage your private keys when you add your private keys to ssh-agent then the agent interacts with the SSH client to authenticate you to servers without exposing your private key.\
+to activate the ssh-agent the command is `eval "$(ssh-agent -s)"`\
+here `eval` it is a command which will evaluate and execute strings as a single command. for example:\
+```
+cmd = "echo "hello world""
+eval $cmd
+```
+Output
+```
+hello world
+```
+here it has evaluated the string `"echo"hello world""` and executed `echo"hello world"`
+in the same way when we run `ssh-agent -s` it should set up environment veriables insted it will give output like
+```
+SSH_AUTH_SOCK=path_of_file; export SSH_AUTH_SOCK;
+SSH_AGENT_PID=1234; export SSH_AGENT_PID;
+```
+when we execute this with eval then the agent will get activated
+
+## Add keys to ssh-agent
+to add keys to ssh-agent the command is 
+```
+ssh-add "key_path"
+```
+by this command you can add keys to agent\
+to list the keys added to ssh-agent the command is
+```
+ssh-add -l
+```
+
+## Agent Forwarding
+agent forwarding is used to copy your private keys from local to the remote server and it will be in the remote server until the ssh sesion expires.\
+Agent will be used when you need to switch from one server to another server and you need to use the same private key for the another server as well then we will use agent forwarding.\
+For Example:\
+there are 4 remote servers and all the 4 remote servers have the same public key and the private key is only in local machine and you need to connect with remote server and then you need to connect to another server without switching back to local machine then you will use agent forwarding.\
+the command to do this is.
+```
+ssh -A username@server_ip
+```
+# SSH port
+ssh by default runs on network port number 22.\
+User can change the port number to make the ssh connection more secure.\
+To change the ssh port number there are few steps.
+* Chang the ssh configuration file in server at `/etc/ssh/sshd_config` in the file you will find a line `Port 22` and you can comment it or change it to the port number you required and restart the ssh in server by `sudo systemctl restart sshd`
+* At local machine you need to update ssh client configuration file which will be at `~/.ssh/ssh_config` you need to add few lines
+* ``` 
+    Host myserver
+         HostName server_ip
+         User username
+         Port (port_number) 
+* With this process you can access the remote server with the port number you defined.
+
+# SSH Configuration files at client and remote server
+

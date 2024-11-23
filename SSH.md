@@ -146,3 +146,9 @@ when you have a script locally and you want to run the script in server then the
 * when we connect to a new server with ssh then it will ask for authenticate so that it will connect to server 
 * it will ask for authentication because it is the new server and will you trust this server when you say yes then ssh will store the details of the server in `~/.ssh/known_hosts` and it will not ask for authentication again.
 
+* types of keys
+* network monitoring
+* what is port forwarding 
+* what is ssh tunnel
+
+
